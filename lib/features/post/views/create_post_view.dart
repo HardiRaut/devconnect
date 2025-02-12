@@ -46,8 +46,9 @@ class _CreatePosViewState extends ConsumerState<CreatePostView> {
           images: images,
           repliedTo: '',
           context: context,
+          repliedToUserId: '',
         );
-        Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override

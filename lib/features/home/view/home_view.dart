@@ -1,4 +1,6 @@
 import 'package:devconnect/constants/ui_constants.dart';
+import 'package:devconnect/features/explore/view/explore_view.dart';
+import 'package:devconnect/features/notifications/view/notification_view.dart';
 import 'package:devconnect/features/post/views/create_post_view.dart';
 import 'package:devconnect/features/post/widgets/post_list.dart';
 import 'package:devconnect/theme/theme.dart';
@@ -29,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbar,
+      appBar: _page == 0 ? appbar : null ,
       body: IndexedStack(
         index: _page,
         children: [
@@ -37,10 +39,10 @@ class _HomeViewState extends State<HomeView> {
             child: PostList(),
           ),
           Center(
-            child: Text('Search'),
+            child: ExploreView(),
           ),
           Center(
-            child: Text('Notifications'),
+            child: NotificationView(),
           ),
           Center(
             child: Text('Messages'),

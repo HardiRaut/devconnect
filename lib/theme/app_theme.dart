@@ -1,4 +1,4 @@
-import 'package:devconnect/theme/pallet.dart';
+import 'package:devconnect/theme/pallete.dart';
 import 'package:flutter/material.dart';
 
 

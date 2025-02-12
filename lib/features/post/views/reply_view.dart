@@ -26,39 +26,50 @@ class ReplyView extends ConsumerWidget {
                 data: (posts) {
                   return ref.watch(getLatestPostProvider).when(
                         data: (data) {
-                          if (data.events.contains(
-                            'databases.*.collections.${AppwriteConstants.postsCollection}.documents.*.create',
-                          )) {
-                            posts.insert(
-                              0,
-                              Post.fromMap(data.payload),
-                            );
-                          } else if (data.events.contains(
-                            'databases.*.collections.${AppwriteConstants.postsCollection}.documents.*.update',
-                          )) {
-                            final startingPoint =
-                                data.events[0].lastIndexOf('documents.');
+                          final latestPost = Post.fromMap(data.payload);
+                          bool isPostAlreadyPresent = false;
+                          for (final postModel in posts) {
+                            if (postModel.id == latestPost.id) {
+                              isPostAlreadyPresent = true;
+                              break;
+                            }
+                          }
+                          if (!isPostAlreadyPresent &&
+                              latestPost.repliedTo == post.id) {
+                            if (data.events.contains(
+                              'databases.*.collections.${AppwriteConstants.postsCollection}.documents.*.create',
+                            )) {
+                              posts.insert(
+                                0,
+                                Post.fromMap(data.payload),
+                              );
+                            } else if (data.events.contains(
+                              'databases.*.collections.${AppwriteConstants.postsCollection}.documents.*.update',
+                            )) {
+                              final startingPoint =
+                                  data.events[0].lastIndexOf('documents.');
 
-                            final endPoint =
-                                data.events[0].lastIndexOf('.update');
+                              final endPoint =
+                                  data.events[0].lastIndexOf('.update');
 
-                            final postId = data.events[0]
-                                .substring(startingPoint + 10, endPoint);
+                              final postId = data.events[0]
+                                  .substring(startingPoint + 10, endPoint);
 
-                            var post = posts
-                                .where((element) => element.id == postId)
-                                .first;
+                              var post = posts
+                                  .where((element) => element.id == postId)
+                                  .first;
 
-                            final postIndex = posts.indexOf(post);
+                              final postIndex = posts.indexOf(post);
 
-                            posts
-                                .removeWhere((element) => element.id == postId);
+                              posts.removeWhere(
+                                  (element) => element.id == postId);
 
-                            posts.insert(postIndex, post);
+                              posts.insert(postIndex, post);
 
-                            post = Post.fromMap(data.payload);
+                              post = Post.fromMap(data.payload);
 
-                            posts[postIndex] = post;
+                              posts[postIndex] = post;
+                            }
                           }
 
                           return Expanded(
@@ -96,6 +107,7 @@ class ReplyView extends ConsumerWidget {
             postText: value,
             context: context,
             repliedTo: post.id,
+            repliedToUserId: post.userId,
           );
         },
         decoration: const InputDecoration(

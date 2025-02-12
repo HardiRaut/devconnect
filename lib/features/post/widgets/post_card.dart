@@ -8,8 +8,9 @@ import 'package:devconnect/features/post/views/reply_view.dart';
 import 'package:devconnect/features/post/widgets/carousel_image.dart';
 import 'package:devconnect/features/post/widgets/hashtag_text.dart';
 import 'package:devconnect/features/post/widgets/post_icon_button.dart';
+import 'package:devconnect/features/user_profile/view/user_profile_view.dart';
 import 'package:devconnect/models/post_model.dart';
-import 'package:devconnect/theme/pallet.dart';
+import 'package:devconnect/theme/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,9 +43,17 @@ class PostCard extends ConsumerWidget {
                         children: [
                           Container(
                             margin: const EdgeInsets.all(10),
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(user.profilePic),
-                              radius: 35,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  UserProfileView.route(user),
+                                );
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(user.profilePic),
+                                radius: 35,
+                              ),
                             ),
                           ),
                           Expanded(
@@ -84,14 +93,14 @@ class PostCard extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
-                                    // if (user.isDev)
-                                    //   Padding(
-                                    //     padding:
-                                    //         const EdgeInsets.only(right: 5.0),
-                                    //     child: SvgPicture.asset(
-                                    //       AssetsConstants.verifiedIcon,
-                                    //     ),
-                                    //   ),
+                                    if (user.isDev)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
+                                        child: SvgPicture.asset(
+                                          AssetsConstants.verifiedIcon,
+                                        ),
+                                      ),
                                     Text(
                                       '@${user.name} · ${timeago.format(
                                         post.createdAt,
@@ -104,44 +113,44 @@ class PostCard extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
-                                //         if (post.repliedTo.isNotEmpty)
-                                //           ref
-                                //               .watch(
-                                //                   getTweetByIdProvider(post.repliedTo))
-                                //               .when(
-                                //                 data: (repliedToTweet) {
-                                //                   final replyingToUser = ref
-                                //                       .watch(
-                                //                         userDetailsProvider(
-                                //                           repliedToTweet.uid,
-                                //                         ),
-                                //                       )
-                                //                       .value;
-                                //                   return RichText(
-                                //                     text: TextSpan(
-                                //                       text: 'Replying to',
-                                //                       style: const TextStyle(
-                                //                         color: Pallete.greyColor,
-                                //                         fontSize: 16,
-                                //                       ),
-                                //                       children: [
-                                //                         TextSpan(
-                                //                           text:
-                                //                               ' @${replyingToUser?.name}',
-                                //                           style: const TextStyle(
-                                //                             color: Pallete.blueColor,
-                                //                             fontSize: 16,
-                                //                           ),
-                                //                         ),
-                                //                       ],
-                                //                     ),
-                                //                   );
-                                //                 },
-                                //                 error: (error, st) => ErrorText(
-                                //                   error: error.toString(),
-                                //                 ),
-                                //                 loading: () => const SizedBox(),
-                                //               ),
+                                if (post.repliedTo.isNotEmpty)
+                                  ref
+                                      .watch(
+                                          getPostByIdProvider(post.repliedTo))
+                                      .when(
+                                        data: (repliedToPost) {
+                                          final replyingToUser = ref
+                                              .watch(
+                                                userDetailsProvider(
+                                                  repliedToPost.id,
+                                                ),
+                                              )
+                                              .value;
+                                          return RichText(
+                                            text: TextSpan(
+                                              text: 'Replying to',
+                                              style: const TextStyle(
+                                                color: Pallete.greyColor,
+                                                fontSize: 16,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      ' @${replyingToUser?.name}',
+                                                  style: const TextStyle(
+                                                    color: Pallete.blueColor,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        error: (error, st) => ErrorText(
+                                          error: error.toString(),
+                                        ),
+                                        loading: () => const SizedBox(),
+                                      ),
                                 HashtagText(text: post.text),
                                 if (post.postType == PostType.image)
                                   CarouselImage(imageLinks: post.imagesLinks),

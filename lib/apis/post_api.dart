@@ -20,6 +20,9 @@ abstract class IPostAPI {
   FutureEither<Document> likePost(Post post);
   FutureEither<Document> updateReshareCount(Post post);
   Future<List<Document>> getRepliesToPost(Post post);
+  Future<Document> getPostById(String id);
+  Future<List<Document>> getUserPosts(String userId);
+  Future<List<Document>> getPostsByHashtag(String hashtag);
 }
 
 class PostAPI implements IPostAPI {
@@ -138,4 +141,35 @@ class PostAPI implements IPostAPI {
     );
     return document.documents;
   }
+
+  @override
+  Future<Document> getPostById(String id) async {
+    return _db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postsCollection,
+      documentId: id,
+    );
+  }
+  
+  @override
+  Future<List<Document>> getUserPosts(String userId) async {
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postsCollection,
+      queries: [Query.equal('userId', userId)],
+    );
+    return documents.documents;
+    }
+    
+      @override
+      Future<List<Document>> getPostsByHashtag(String hashtag) async{
+    // TODO: implement getPostsByHashtag
+    final documents = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.postsCollection,
+      queries: [Query.search('hashtags', hashtag)],
+    );
+    return documents.documents;
+      }
+    
 }
