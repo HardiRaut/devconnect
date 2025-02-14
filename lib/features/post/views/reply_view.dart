@@ -8,16 +8,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReplyView extends ConsumerWidget {
   static route(Post post) => MaterialPageRoute(
-        builder: (context) => ReplyView(post: post),
+        builder: (context) => ReplyView(
+          post: post,
+        ),
       );
   final Post post;
-  const ReplyView({super.key, required this.post});
+  const ReplyView({
+    super.key,
+    required this.post,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Post"),
+        title: const Text('Post'),
       ),
       body: Column(
         children: [
@@ -49,9 +54,7 @@ class ReplyView extends ConsumerWidget {
                               final startingPoint =
                                   data.events[0].lastIndexOf('documents.');
 
-                              final endPoint =
-                                  data.events[0].lastIndexOf('.update');
-
+                              final endPoint =                                  data.events[0].lastIndexOf('.update');
                               final postId = data.events[0]
                                   .substring(startingPoint + 10, endPoint);
 
@@ -63,40 +66,42 @@ class ReplyView extends ConsumerWidget {
 
                               posts.removeWhere(
                                   (element) => element.id == postId);
-
-                              posts.insert(postIndex, post);
-
+                                  
                               post = Post.fromMap(data.payload);
-
-                              posts[postIndex] = post;
+                              posts.insert(postIndex, post);
                             }
                           }
 
                           return Expanded(
                             child: ListView.builder(
                               itemCount: posts.length,
-                              itemBuilder: (context, index) {
+                              itemBuilder: (BuildContext context, int index) {
                                 final post = posts[index];
                                 return PostCard(post: post);
                               },
                             ),
                           );
                         },
-                        error: (error, st) =>
-                            ErrorText(error: error.toString()),
-                        loading: () => Expanded(
-                          child: ListView.builder(
-                            itemCount: posts.length,
-                            itemBuilder: (context, index) {
-                              final post = posts[index];
-                              return PostCard(post: post);
-                            },
-                          ),
+                        error: (error, stackTrace) => ErrorText(
+                          error: error.toString(),
                         ),
+                        loading: () {
+                          return Expanded(
+                            child: ListView.builder(
+                              itemCount: posts.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final post = posts[index];
+                                return PostCard(post: post);
+                              },
+                            ),
+                          );
+                        },
                       );
                 },
-                error: (error, st) => ErrorText(error: error.toString()),
-                loading: () => Loader(),
+                error: (error, stackTrace) => ErrorText(
+                  error: error.toString(),
+                ),
+                loading: () => const Loader(),
               ),
         ],
       ),

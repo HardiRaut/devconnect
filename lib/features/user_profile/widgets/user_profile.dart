@@ -1,5 +1,4 @@
 import 'package:devconnect/common/common.dart';
-import 'package:devconnect/common/loading_page.dart';
 import 'package:devconnect/constants/constants.dart';
 import 'package:devconnect/features/auth/controller/auth_controller.dart';
 import 'package:devconnect/features/post/widgets/post_card.dart';

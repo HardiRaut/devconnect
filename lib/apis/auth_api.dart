@@ -22,6 +22,7 @@ abstract class IAuthAPI {
   });
 
   Future<User?> currentUserAccount();
+  FutureEitherVoid logout();
 }
 
 class AuthAPI implements IAuthAPI {
@@ -76,6 +77,26 @@ class AuthAPI implements IAuthAPI {
         password: password,
       );
       return right(session);
+    } on AppwriteException catch (e) {
+      return left(Failure(
+        e.message ?? 'An error occurred',
+        StackTrace.current,
+      ));
+    } catch (e) {
+      return left(Failure(
+        e.toString(),
+        StackTrace.current,
+      ));
+    }
+  }
+  
+  @override
+  FutureEitherVoid logout() async{
+    try {
+      await _account.deleteSession(sessionId: 'current');
+      // clear the session
+      
+      return right(null);
     } on AppwriteException catch (e) {
       return left(Failure(
         e.message ?? 'An error occurred',

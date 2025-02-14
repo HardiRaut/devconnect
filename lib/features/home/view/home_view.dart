@@ -1,5 +1,6 @@
 import 'package:devconnect/constants/ui_constants.dart';
 import 'package:devconnect/features/explore/view/explore_view.dart';
+import 'package:devconnect/features/home/widgets/side_drawer.dart';
 import 'package:devconnect/features/notifications/view/notification_view.dart';
 import 'package:devconnect/features/post/views/create_post_view.dart';
 import 'package:devconnect/features/post/widgets/post_list.dart';
@@ -44,9 +45,7 @@ class _HomeViewState extends State<HomeView> {
           Center(
             child: NotificationView(),
           ),
-          Center(
-            child: Text('Messages'),
-          ),
+         
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,6 +59,7 @@ class _HomeViewState extends State<HomeView> {
           size: 28,
         ),
       ),
+      drawer: SideDrawer(),
       bottomNavigationBar: CupertinoTabBar(
         onTap: onPageChanged,
         items: [
@@ -90,17 +90,7 @@ class _HomeViewState extends State<HomeView> {
                 : Icon(Icons.notifications_none),
             label: 'Notifications',
           ),
-          BottomNavigationBarItem(
-            icon: _page == 3
-                ? Icon(
-                    Icons.mail,
-                    color: Pallete.whiteColor,
-                  )
-                : Icon(
-                    Icons.mail_outline,
-                  ),
-            label: 'Messages',
-          ),
+          
         ],
       ),
     );

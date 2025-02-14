@@ -1,4 +1,5 @@
 import 'package:devconnect/common/common.dart';
+import 'package:devconnect/constants/constants.dart';
 import 'package:devconnect/features/auth/controller/auth_controller.dart';
 import 'package:devconnect/features/notifications/controller/notification_controller.dart';
 import 'package:devconnect/features/notifications/widgets/notification_title.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:devconnect/models/notification_model.dart' as model;
 
-import '../../../constants/appwrite_constants.dart';
 
 class NotificationView extends ConsumerWidget {
   const NotificationView({super.key});

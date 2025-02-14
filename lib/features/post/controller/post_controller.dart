@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
-import 'package:devconnect/apis/notification_api.dart';
 import 'package:devconnect/apis/post_api.dart';
 import 'package:devconnect/apis/storage_api.dart';
 import 'package:devconnect/core/enums/notification_type_enum.dart';
@@ -190,7 +189,7 @@ class PostController extends StateNotifier<bool> {
       id: '',
       resharedCount: 0,
       resharedBy: '',
-      repliedTo: '',
+      repliedTo: repliedTo,
     );
     final res = await _postAPI.sharePost(post);
 
@@ -231,7 +230,7 @@ class PostController extends StateNotifier<bool> {
       id: '',
       resharedCount: 0,
       resharedBy: '',
-      repliedTo: '',
+      repliedTo: repliedTo,
     );
     final res = await _postAPI.sharePost(post);
 
@@ -279,7 +278,7 @@ class PostController extends StateNotifier<bool> {
   }
 
   Future<List<Post>> getPostsByHashtag(String hashtag) async {
-    final postList = await _postAPI.getUserPosts(hashtag);
+    final postList = await _postAPI.getPostsByHashtag(hashtag);
     final posts = postList.map((post) => Post.fromMap(post.data)).toList();
     return posts;
   }

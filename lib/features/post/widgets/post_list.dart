@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:devconnect/common/common.dart';
 import 'package:devconnect/constants/appwrite_constants.dart';
 import 'package:devconnect/features/post/controller/post_controller.dart';
@@ -30,45 +28,46 @@ class PostList extends ConsumerWidget {
                       final startingPoint =
                           data.events[0].lastIndexOf('documents.');
 
-                      final endPoint = data.events[0].lastIndexOf('.update');
-
+                      final endPoint = data.events[0].lastIndexOf('.update');                      
                       final postId = data.events[0]
                           .substring(startingPoint + 10, endPoint);
 
                       var post =
                           posts.where((element) => element.id == postId).first;
 
-                      final postIndex = posts.indexOf(post);
-
+                      final tweetIndex = posts.indexOf(post);
                       posts.removeWhere((element) => element.id == postId);
 
-                      posts.insert(postIndex, post);
-
                       post = Post.fromMap(data.payload);
-
-                      posts[postIndex] = post;
+                      posts.insert(tweetIndex, post);
                     }
 
                     return ListView.builder(
                       itemCount: posts.length,
-                      itemBuilder: (context, index) {
+                      itemBuilder: (BuildContext context, int index) {
                         final post = posts[index];
                         return PostCard(post: post);
                       },
                     );
                   },
-                  error: (error, st) => ErrorText(error: error.toString()),
-                  loading: () => ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      final post = posts[index];
-                      return PostCard(post: post);
-                    },
+                  error: (error, stackTrace) => ErrorText(
+                    error: error.toString(),
                   ),
+                  loading: () {
+                    return ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final post = posts[index];
+                        return PostCard(post: post);
+                      },
+                    );
+                  },
                 );
           },
-          error: (error, st) => ErrorText(error: error.toString()),
-          loading: () => Loader(),
+          error: (error, stackTrace) => ErrorText(
+            error: error.toString(),
+          ),
+          loading: () => const Loader(),
         );
   }
 }

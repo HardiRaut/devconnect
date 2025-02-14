@@ -16,10 +16,10 @@ class CreatePostView extends ConsumerStatefulWidget {
   const CreatePostView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CreatePosViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CreatePostViewState();
 }
 
-class _CreatePosViewState extends ConsumerState<CreatePostView> {
+class _CreatePostViewState extends ConsumerState<CreatePostView> {
   final postTextController = TextEditingController();
   List<File> images = [];
 
@@ -35,7 +35,7 @@ class _CreatePosViewState extends ConsumerState<CreatePostView> {
       if (images.isEmpty) {
         showSnackBar(context, 'No images selected');
       } else {
-        showSnackBar(context, 'Images selected');
+        showSnackBar(context, '${images.length} images selected');
       }
     });
   }
@@ -58,19 +58,30 @@ class _CreatePosViewState extends ConsumerState<CreatePostView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.close, size: 30),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         actions: [
-          TextButton(
-            onPressed: sharePost,
-            child: Text(
-              'Post',
-              style: TextStyle(
-                color: Colors.blue,
-                fontSize: 18,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: sharePost,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ),
+              child: const Text(
+                'Post',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -82,81 +93,87 @@ class _CreatePosViewState extends ConsumerState<CreatePostView> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(currentUser.profilePic),
-                        ),
-                        const SizedBox(width: 50),
-                        Expanded(
-                          child: TextField(
-                            controller: postTextController,
-                            style: TextStyle(
-                              fontSize: 22,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'What\'s on your mind?',
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(
-                                  fontSize: 22,
-                                  color: Pallete.greyColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            maxLines: null,
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(currentUser.profilePic),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: postTextController,
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'What\'s on your mind?',
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                  fontSize: 18,
+                                  color: Pallete.greyColor,
+                                ),
+                              ),
+                              maxLines: null,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     if (images.isNotEmpty)
                       CarouselSlider(
                         items: images.map((image) {
                           return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.file(image));
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: FileImage(image),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
                         }).toList(),
                         options: CarouselOptions(
-                          height: 400,
+                          height: 300,
                           enableInfiniteScroll: false,
+                          viewportFraction: 0.9,
+                          enlargeCenterPage: true,
                         ),
-                      )
+                      ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: Pallete.greyColor,
-              width: 0.5,
+              color: Pallete.greyColor.withOpacity(0.3),
+              width: 1,
             ),
           ),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: GestureDetector(
-                onTap: onPickImages,
-                child: Icon(Icons.image),
-              ),
+            IconButton(
+              icon: const Icon(Icons.image, color: Colors.blue, size: 28),
+              onPressed: onPickImages,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: IconButton(
-                icon: Icon(Icons.gif_box),
-                onPressed: () {},
-              ),
+            IconButton(
+              icon: const Icon(Icons.gif_box, color: Colors.blue, size: 28),
+              onPressed: () {},
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: IconButton(
-                icon: Icon(Icons.emoji_emotions),
-                onPressed: () {},
-              ),
+            IconButton(
+              icon: const Icon(Icons.emoji_emotions, color: Colors.blue, size: 28),
+              onPressed: () {},
             ),
           ],
         ),

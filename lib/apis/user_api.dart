@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:devconnect/constants/constants.dart';
@@ -137,7 +135,6 @@ class UserAPI implements IUserAPI {
   
   @override
   FutureEitherVoid addToFollowing(UserModel user) async {
-    // TODO: implement addToFollowing
     try {
       await _db.updateDocument(
         databaseId: AppwriteConstants.databaseId,

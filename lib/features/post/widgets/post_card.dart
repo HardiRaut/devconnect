@@ -1,6 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:devconnect/common/common.dart';
-import 'package:devconnect/constants/constants.dart';
+import 'package:devconnect/constants/assets_constants.dart';
 import 'package:devconnect/core/enums/post_type_enum.dart';
 import 'package:devconnect/features/auth/controller/auth_controller.dart';
 import 'package:devconnect/features/post/controller/post_controller.dart';
@@ -10,11 +10,12 @@ import 'package:devconnect/features/post/widgets/hashtag_text.dart';
 import 'package:devconnect/features/post/widgets/post_icon_button.dart';
 import 'package:devconnect/features/user_profile/view/user_profile_view.dart';
 import 'package:devconnect/models/post_model.dart';
-import 'package:devconnect/theme/pallete.dart';
+import 'package:devconnect/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostCard extends ConsumerWidget {
@@ -34,7 +35,10 @@ class PostCard extends ConsumerWidget {
               data: (user) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, ReplyView.route(post));
+                    Navigator.push(
+                      context,
+                      ReplyView.route(post),
+                    );
                   },
                   child: Column(
                     children: [
@@ -61,46 +65,45 @@ class PostCard extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (post.resharedBy.isNotEmpty)
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        AssetsConstants.retweetIcon,
-                                        color: Pallete.greyColor,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Text(
-                                        '${post.resharedBy} Reshared',
-                                        style: const TextStyle(
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          AssetsConstants.retweetIcon,
                                           color: Pallete.greyColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
+                                          height: 20,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${post.resharedBy} reshared',
+                                          style: const TextStyle(
+                                            color: Pallete.greyColor,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 Row(
                                   children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        right: user.isDev ? 1 : 5,
-                                      ),
-                                      child: Text(
-                                        user.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 19,
-                                        ),
+                                    Text(
+                                      user.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
                                       ),
                                     ),
                                     if (user.isDev)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 5.0),
+                                        padding: const EdgeInsets.only(left: 4.0),
                                         child: SvgPicture.asset(
                                           AssetsConstants.verifiedIcon,
+                                          height: 18,
                                         ),
                                       ),
+                                    const SizedBox(width: 4),
                                     Text(
                                       '@${user.name} · ${timeago.format(
                                         post.createdAt,
@@ -108,7 +111,7 @@ class PostCard extends ConsumerWidget {
                                       )}',
                                       style: const TextStyle(
                                         color: Pallete.greyColor,
-                                        fontSize: 17,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
@@ -122,27 +125,30 @@ class PostCard extends ConsumerWidget {
                                           final replyingToUser = ref
                                               .watch(
                                                 userDetailsProvider(
-                                                  repliedToPost.id,
+                                                  repliedToPost.userId,
                                                 ),
                                               )
                                               .value;
-                                          return RichText(
-                                            text: TextSpan(
-                                              text: 'Replying to',
-                                              style: const TextStyle(
-                                                color: Pallete.greyColor,
-                                                fontSize: 16,
-                                              ),
-                                              children: [
-                                                TextSpan(
-                                                  text:
-                                                      ' @${replyingToUser?.name}',
-                                                  style: const TextStyle(
-                                                    color: Pallete.blueColor,
-                                                    fontSize: 16,
-                                                  ),
+                                          return Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: 'Replying to',
+                                                style: const TextStyle(
+                                                  color: Pallete.greyColor,
+                                                  fontSize: 14,
                                                 ),
-                                              ],
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        ' @${replyingToUser?.name}',
+                                                    style: const TextStyle(
+                                                      color: Pallete.blueColor,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           );
                                         },
@@ -151,27 +157,33 @@ class PostCard extends ConsumerWidget {
                                         ),
                                         loading: () => const SizedBox(),
                                       ),
-                                HashtagText(text: post.text),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: HashtagText(text: post.text),
+                                ),
                                 if (post.postType == PostType.image)
-                                  CarouselImage(imageLinks: post.imagesLinks),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: CarouselImage(imageLinks: post.imagesLinks),
+                                  ),
                                 if (post.link.isNotEmpty) ...[
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 8),
                                   AnyLinkPreview(
                                     displayDirection:
                                         UIDirection.uiDirectionHorizontal,
-                                    link: 'https://${post.link}',
+                                    link: post.link,
                                   ),
                                 ],
                                 Container(
                                   margin: const EdgeInsets.only(
-                                    top: 10,
+                                    top: 12,
                                     right: 20,
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      TweetIconButton(
+                                      PostIconButton(
                                         pathName: AssetsConstants.viewsIcon,
                                         text: (post.commentsIds.length +
                                                 post.resharedCount +
@@ -179,13 +191,13 @@ class PostCard extends ConsumerWidget {
                                             .toString(),
                                         onTap: () {},
                                       ),
-                                      TweetIconButton(
+                                      PostIconButton(
                                         pathName: AssetsConstants.commentIcon,
                                         text:
                                             post.commentsIds.length.toString(),
                                         onTap: () {},
                                       ),
-                                      TweetIconButton(
+                                      PostIconButton(
                                         pathName: AssetsConstants.retweetIcon,
                                         text: post.resharedCount.toString(),
                                         onTap: () {
@@ -245,7 +257,11 @@ class PostCard extends ConsumerWidget {
                                         },
                                       ),
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          await Share.share(
+                                            post.text
+                                          );
+                                        },
                                         icon: const Icon(
                                           Icons.share_outlined,
                                           size: 25,
@@ -255,13 +271,13 @@ class PostCard extends ConsumerWidget {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 1),
+                                const SizedBox(height: 8),
                               ],
                             ),
                           ),
                         ],
                       ),
-                      const Divider(color: Pallete.greyColor),
+                      const Divider(color: Pallete.greyColor, height: 1),
                     ],
                   ),
                 );

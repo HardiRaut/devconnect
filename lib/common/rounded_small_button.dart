@@ -13,6 +13,7 @@ class RoundedSmallButton extends StatelessWidget {
     required this.label,
     this.backgroundColor = Pallete.backgroundColor,
     this.textColor = Pallete.whiteColor,
+
   });
 
   @override

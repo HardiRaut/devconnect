@@ -1,4 +1,6 @@
+import 'package:devconnect/features/post/views/hashtag_view.dart';
 import 'package:devconnect/theme/theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class HashtagText extends StatelessWidget {
@@ -7,6 +9,17 @@ class HashtagText extends StatelessWidget {
     super.key,
     required this.text,
   });
+
+  bool isValidUrl(String url) {
+    // Regular expression to match URLs
+    final urlRegex = RegExp(
+      r'^(https?:\/\/)?' // http:// or https://
+      r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}' // domain name
+      r'(\/[^\s]*)?$', // path
+    );
+
+    return urlRegex.hasMatch(url);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +35,16 @@ class HashtagText extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
-            // recognizer: TapGestureRecognizer()
-            //   ..onTap = () {
-            //     Navigator.push(
-            //       context,
-            //       HashtagView.route(element),
-            //     );
-            //   },
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context,
+                  HashtagView.route(element),
+                );
+              },
           ),
         );
-      } else if (element.startsWith('www.') || element.startsWith('https://')) {
+      } else if (isValidUrl(element)) {
         textspans.add(
           TextSpan(
             text: '$element ',

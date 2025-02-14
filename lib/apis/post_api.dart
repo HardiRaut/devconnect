@@ -163,7 +163,6 @@ class PostAPI implements IPostAPI {
     
       @override
       Future<List<Document>> getPostsByHashtag(String hashtag) async{
-    // TODO: implement getPostsByHashtag
     final documents = await _db.listDocuments(
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.postsCollection,

@@ -3,6 +3,7 @@ import 'package:devconnect/apis/auth_api.dart';
 import 'package:devconnect/apis/user_api.dart';
 import 'package:devconnect/core/utils.dart';
 import 'package:devconnect/features/auth/view/signin_view.dart';
+import 'package:devconnect/features/auth/view/signup_view.dart';
 import 'package:devconnect/features/home/view/home_view.dart';
 import 'package:devconnect/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,6 @@ final userDetailsProvider = FutureProvider.family((ref, String uid) async {
   debugPrint("Fetched user details: ${userData.toString()}");
   return userData;
 });
-
 
 final currentUserAccountProvider = FutureProvider((ref) async {
   final authController = ref.watch(authControllerProvider.notifier);
@@ -120,5 +120,19 @@ class AuthController extends StateNotifier<bool> {
     debugPrint("Fetched user data: ${doc.data}");
 
     return UserModel.fromMap(doc.data);
+  }
+
+  void logout(BuildContext context) async {
+    
+    final res = await _authAPI.logout();
+    res.fold((l) {
+      debugPrint("Error logging out: ${l.message}");
+    }, (r) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        SignUpView.route(),
+        (route) => false,
+      );
+    });
   }
 }
