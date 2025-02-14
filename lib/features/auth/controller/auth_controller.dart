@@ -122,9 +122,11 @@ class AuthController extends StateNotifier<bool> {
     return UserModel.fromMap(doc.data);
   }
 
-  void logout(BuildContext context) async {
+  void logout(BuildContext context, WidgetRef ref) async {
     
     final res = await _authAPI.logout();
+    ref.invalidate(currentUserDetailsProvider); // Clears user state
+    ref.invalidate(currentUserAccountProvider);
     res.fold((l) {
       debugPrint("Error logging out: ${l.message}");
     }, (r) {
